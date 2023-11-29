@@ -47,7 +47,7 @@ class Gift {
     }
 
     checkCollection(playerX, playerY) {
-        if (this.x + 15 > playerX && this.x - 15 < playerX && this.y + 50 > playerY ) {
+        if (this.x + 15 > playerX && this.x - 15 < playerX && this.y + 50 > playerY && this.y - 50 < playerY) {
             this.isCollected = true;
         }
     }
