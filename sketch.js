@@ -1,15 +1,26 @@
 class Player {
     x;
     y;
+    points;
+    highScore;
+    lives;
 
     constructor() {
         this.x = width / 2
         this.y = height / 2 + 125
+        this.points = 0;
+        this.highScore = 0;
+        this.lives = 3;
     }
 
     draw() {
-        rectMode(CORNER);
-        rect(this.x, this.y, 50, 75)
+        if(this.lives > 0) {
+            rectMode(CORNER);
+            rect(this.x, this.y, 50, 75)
+        }
+        else {
+            this.highScore = this.points;
+        }
     }
 
     move() {
@@ -22,33 +33,57 @@ class Player {
             }
         }
     }
+
+    addPoints() {
+        this.points++;
+    }
+
+    loseLife() {
+        if(this.lives > 0) {
+            this.lives -= 1;
+        }
+    }
+
+    respawn() {
+        this.lives = 3;
+    }
 }
 
 class Gift {
     x;
     y;
+    speed;
     isCollected;
-    isMissed;
+    isOutOfBounds;
 
     constructor() {
         this.x = random(0, width - 40);
         this.y = 0;
+        this.speed = 4;
         this.isCollected = false;
-        this.isMissed = false;
+        this.isOutOfBounds = false;
     }
 
     draw() {
-        if(!this.isCollected) {
+        if(!this.isCollected || !this.isOutOfBounds) {
             rectMode(CORNER);
             rect(this.x, this.y, 50, 50);
 
-            this.y++;
+            this.y += this.speed;
         }
     }
 
     checkCollection(playerX, playerY) {
         if (this.x + 15 > playerX && this.x - 15 < playerX && this.y + 50 > playerY && this.y - 50 < playerY) {
             this.isCollected = true;
+            return true;
+        }
+    }
+
+    checkIsOutOfBounds() {
+        if(this.y > height) {
+            this.isOutOfBounds = true;
+            return true;
         }
     }
 }
@@ -70,5 +105,23 @@ function draw() {
     player.move();
 
     gift.draw();
-    gift.checkCollection(player.x, player.y);
+
+    if(gift.checkCollection(player.x, player.y)) {
+        player.addPoints();
+        gift = new Gift();
+    }
+    if(gift.checkIsOutOfBounds()) {
+        player.loseLife();
+        gift = new Gift();
+    }
+
+    textSize(15);
+    textAlign(LEFT);
+    text("Score: " + player.points, 5, 16)
+
+    textAlign(CENTER);
+    text("Highest Score: " + player.highScore, width / 2, 16)
+
+    textAlign(RIGHT)
+    text("Lives: " + player.lives, width - 10, 16)
 }
