@@ -24,13 +24,11 @@ class Player {
     }
 
     move() {
-        if (keyIsPressed) {
-            if (key === "a") {
-                this.x -= 3;
-            }
-            if (key === "d") {
-                this.x += 3;
-            }
+        if (keyIsDown(65) || keyIsDown(LEFT_ARROW)) {
+            this.x -= 3;
+        }
+        if (keyIsDown(68) || keyIsDown(RIGHT_ARROW)) {
+            this.x += 3;
         }
     }
 
@@ -44,7 +42,7 @@ class Player {
         }
     }
 
-    respawn() {
+    restart() {
         this.lives = 3;
     }
 }
@@ -59,7 +57,7 @@ class Gift {
     constructor() {
         this.x = random(0, width - 40);
         this.y = 0;
-        this.speed = 4;
+        this.speed = 3;
         this.isCollected = false;
         this.isOutOfBounds = false;
     }
@@ -91,11 +89,21 @@ class Gift {
 let player;
 let gift;
 
+let btnRestart;
+
 function setup() {
     createCanvas(500, 500);
 
     player = new Player();
     gift = new Gift();
+
+    /*
+    const mainContainer = select("main");
+    btnRestart = createButton("Restart")
+    btnRestart.parent(mainContainer);
+    btnRestart.position(width / 2 - 25, height - 30)
+    btnRestart.mousePressed(player.restart())
+    */
 }
 
 function draw() {
