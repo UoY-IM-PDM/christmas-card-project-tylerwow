@@ -6,7 +6,7 @@ class Player {
     lives;
 
     constructor() {
-        this.x = width / 2
+        this.x = width / 2 - 25
         this.y = height / 2 + 125
         this.points = 0;
         this.highScore = 0;
@@ -43,6 +43,10 @@ class Player {
     }
 
     restart() {
+        console.log("restart");
+        this.x = width / 2 - 25;
+        this.y = height / 2 + 125;
+        this.points = 0;
         this.lives = 3;
     }
 }
@@ -97,13 +101,12 @@ function setup() {
     player = new Player();
     gift = new Gift();
 
-    /*
+    
     const mainContainer = select("main");
-    btnRestart = createButton("Restart")
+    btnRestart = createButton("Restart");
     btnRestart.parent(mainContainer);
-    btnRestart.position(width / 2 - 25, height - 30)
-    btnRestart.mousePressed(player.restart())
-    */
+    btnRestart.position(width / 2 - 25, height - 30);
+    btnRestart.mousePressed(player.restart);
 }
 
 function draw() {
