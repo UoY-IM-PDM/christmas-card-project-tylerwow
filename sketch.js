@@ -16,6 +16,7 @@ class Player {
     draw() {
         if(this.lives > 0) {
             rectMode(CORNER);
+            fill(255);
             rect(this.x, this.y, 50, 75)
         }
         else {
@@ -57,6 +58,8 @@ class Gift {
     speed;
     isCollected;
     isOutOfBounds;
+    isFalling;
+    isFake;
 
     constructor() {
         this.x = random(0, width - 40);
@@ -64,11 +67,27 @@ class Gift {
         this.speed = 3;
         this.isCollected = false;
         this.isOutOfBounds = false;
+
+        if (floor(random(1, 5)) === 1) {
+            this.isFake = true;
+        }
+        else {
+            this.isFake = false;
+        }
+        console.log(random(1, 2))
     }
 
     draw() {
         if(!this.isCollected || !this.isOutOfBounds) {
             rectMode(CORNER);
+
+            if (this.isFake) {
+                fill(255, 0, 0);
+            }
+            else {
+                fill(255);
+            }
+
             rect(this.x, this.y, 50, 50);
 
             this.y += this.speed;
@@ -93,6 +112,8 @@ class Gift {
 let player;
 let gift;
 
+let gameOver;
+
 let btnRestart;
 
 function setup() {
@@ -101,12 +122,13 @@ function setup() {
     player = new Player();
     gift = new Gift();
 
+    gameOver = false;
     
     const mainContainer = select("main");
     btnRestart = createButton("Restart");
     btnRestart.parent(mainContainer);
     btnRestart.position(width / 2 - 25, height - 30);
-    btnRestart.mousePressed(player.restart);
+    btnRestart.mousePressed(restart);
 }
 
 function draw() {
@@ -117,15 +139,39 @@ function draw() {
 
     gift.draw();
 
-    if(gift.checkCollection(player.x, player.y)) {
-        player.addPoints();
-        gift = new Gift();
-    }
-    if(gift.checkIsOutOfBounds()) {
-        player.loseLife();
-        gift = new Gift();
+    if (player.lives === 0) {
+        gameOver = true;
     }
 
+    if (gameOver === false) {
+        btnRestart.hide();
+        
+        if(gift.checkCollection(player.x, player.y)) {
+            if (!gift.isFake) {
+                player.addPoints();
+                gift = new Gift();
+            }
+            else {
+                player.loseLife();
+                gift = new Gift();
+            }
+        }
+        if(gift.checkIsOutOfBounds()) {
+            if (!gift.isFake) {
+                player.loseLife();
+                gift = new Gift();
+            }
+            else {
+                player.addPoints();
+                gift = new Gift();
+            }
+        }
+    }
+    else {
+        btnRestart.show();
+    }
+
+    fill(0);
     textSize(15);
     textAlign(LEFT);
     text("Score: " + player.points, 5, 16)
@@ -135,4 +181,10 @@ function draw() {
 
     textAlign(RIGHT)
     text("Lives: " + player.lives, width - 10, 16)
+}
+
+function restart() {
+    gameOver = false;
+    player.restart();
+    gift = new Gift();
 }
