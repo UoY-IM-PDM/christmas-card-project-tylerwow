@@ -1,9 +1,12 @@
+//TODO: Add difficulty select, add start and game over screens, Add new background
+
 class Player {
     x;
     y;
     points;
     highScore;
     lives;
+    speed;
 
     constructor() {
         this.x = width / 2 - 25
@@ -11,13 +14,14 @@ class Player {
         this.points = 0;
         this.highScore = 0;
         this.lives = 3;
+        this.speed = 3;
     }
 
     draw() {
         if(this.lives > 0) {
             rectMode(CORNER);
             fill(255);
-            rect(this.x, this.y, 50, 75)
+            image(imgSanta, this.x, this.y, 50, 75)
         }
         else {
             this.highScore = this.points;
@@ -26,10 +30,10 @@ class Player {
 
     move() {
         if (keyIsDown(65) || keyIsDown(LEFT_ARROW)) {
-            this.x -= 3;
+            this.x -= this.speed;
         }
         if (keyIsDown(68) || keyIsDown(RIGHT_ARROW)) {
-            this.x += 3;
+            this.x += this.speed;
         }
     }
 
@@ -60,11 +64,12 @@ class Gift {
     isOutOfBounds;
     isFalling;
     isFake;
+    imgSelect;
 
     constructor() {
         this.x = random(0, width - 40);
         this.y = 0;
-        this.speed = 3;
+        this.speed = 4;
         this.isCollected = false;
         this.isOutOfBounds = false;
 
@@ -75,6 +80,8 @@ class Gift {
             this.isFake = false;
         }
         console.log(random(1, 2))
+
+        this.imgSelect = floor(random(1, 3));
     }
 
     draw() {
@@ -82,13 +89,22 @@ class Gift {
             rectMode(CORNER);
 
             if (this.isFake) {
-                fill(255, 0, 0);
+                //fill(255, 0, 0);
+
+                //rect(this.x, this.y, 50, 50);
+                image(imgBomb, this.x, this.y, 50, 50);
             }
             else {
-                fill(255);
+                if (this.imgSelect === 1) {
+                    image(imgPresent1, this.x, this.y, 50, 50);
+                }
+                else if (this.imgSelect === 2) {
+                    image(imgPresent2, this.x, this.y, 50, 50);
+                }
+                else if (this.imgSelect === 3) {
+                    image(imgPresent3, this.x, this.y, 50, 50);
+                }
             }
-
-            rect(this.x, this.y, 50, 50);
 
             this.y += this.speed;
         }
@@ -112,9 +128,26 @@ class Gift {
 let player;
 let gift;
 
+let gameStart;
 let gameOver;
 
 let btnRestart;
+
+let imgSanta;
+let imgPresent1;
+let imgPresent2;
+let imgPresent3;
+let imgBomb;
+let imgBg;
+
+function preload() {
+    imgSanta = loadImage("assets/santa.png");
+    imgPresent1 = loadImage("assets/present1.png");
+    imgPresent2 = loadImage("assets/present2.png");
+    imgPresent3 = loadImage("assets/present3.png");
+    imgBomb = loadImage("assets/bomb.png");
+    //imgBg = loadImage("assets/background.png");
+}
 
 function setup() {
     createCanvas(500, 500);
@@ -122,6 +155,7 @@ function setup() {
     player = new Player();
     gift = new Gift();
 
+    gameStart = true;
     gameOver = false;
     
     const mainContainer = select("main");
@@ -133,6 +167,8 @@ function setup() {
 
 function draw() {
     background(255);
+
+    //image(imgBg, 0, 0, width, height);
 
     player.draw();
     player.move();
