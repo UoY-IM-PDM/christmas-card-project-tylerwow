@@ -1,4 +1,4 @@
-//TODO: Add new background
+//TODO: Add new background, add comments, add some final touches
 
 class Player {
     x;
