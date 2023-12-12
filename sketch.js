@@ -1,4 +1,4 @@
-//TODO: Add difficulty select, add start and game over screens, Add new background
+//TODO: Add new background
 
 class Player {
     x;
@@ -24,7 +24,10 @@ class Player {
             image(imgSanta, this.x, this.y, 50, 75)
         }
         else {
-            this.highScore = this.points;
+            if (this.points > this.highScore) {
+                this.highScore = this.points;
+            }
+            
         }
     }
 
@@ -155,7 +158,9 @@ let difficulty;
 let gameStart;
 let gameOver;
 
-let btnRestart;
+let cooldown = false;
+
+// let btnRestart;
 let radioDifficulty;
 
 let imgSanta;
@@ -189,14 +194,14 @@ function setup() {
     
     const mainContainer = select("main");
 
-    btnRestart = createButton("Restart");
-    btnRestart.parent(mainContainer);
-    btnRestart.position(width / 2 - 25, height - 30);
-    btnRestart.mousePressed(restart);
+    // btnRestart = createButton("Restart");
+    // btnRestart.parent(mainContainer);
+    // btnRestart.position(width / 2 - 25, height - 30);
+    // btnRestart.mousePressed(restart);
 
     radioDifficulty = createRadio();
     radioDifficulty.parent(mainContainer);
-    radioDifficulty.position(0, height - 20);
+    radioDifficulty.position(width / 2 - 85, 5);
     radioDifficulty.option("Easy");
     radioDifficulty.option("Normal");
     radioDifficulty.option("Hard");
@@ -205,23 +210,26 @@ function setup() {
 
 function draw() {
     background(255);
-
+    difficulty = radioDifficulty.value();
     //image(imgBg, 0, 0, width, height);
 
-    player.draw();
-    player.move();
-
-    gift.draw();
-
-    //gift.setDifficulty(radioDifficulty.value());
-    difficulty = radioDifficulty.value();
-
-    if (player.lives === 0) {
-        gameOver = true;
+    if (gameStart === true) {
+        radioDifficulty.show();
+        image(imgStart, 0, 0, width, height);
     }
 
-    if (gameOver === false) {
-        btnRestart.hide();
+    if (gameOver === false && gameStart === false) {
+        
+        player.draw();
+        player.move();
+
+        gift.draw();
+
+
+        if (player.lives === 0) {
+            gameOver = true;
+        }
+
         radioDifficulty.hide();
 
         fill(0);
@@ -257,25 +265,39 @@ function draw() {
             }
         }
     }
-    else {
+    else if (gameStart === false ) {
         image(imgGameOver, 0, 0, width, height);
-        btnRestart.show();
+        //btnRestart.show();
         radioDifficulty.show();
+
+        cooldown = true;
+        setTimeout(disableCooldown, 1000);
 
         fill(255);
         stroke(0);
         strokeWeight(2);
         textSize(30);
         textAlign(CENTER);
-        text("Score: " + player.points, width / 2, 130);
+        text("Score: " + player.points, width / 2, 120);
 
         textAlign(CENTER);
-        text("High Score: " + player.highScore, width / 2, 160);
+        text("High Score: " + player.highScore, width / 2, 150);
     }
+}
+
+function keyPressed() {
+    if (gameOver || gameStart && cooldown === false) {
+        restart();
+    }
+}
+
+function disableCooldown() {
+    cooldown = false;
 }
 
 function restart() {
     gameOver = false;
+    gameStart = false;
     player.restart();
     gift = new Gift(difficulty);
 }
