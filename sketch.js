@@ -1,5 +1,3 @@
-//TODO: Add new background, add comments, add some final touches
-
 class Player {
     x;
     y;
@@ -9,8 +7,8 @@ class Player {
     speed;
 
     constructor() {
-        this.x = width / 2 - 25
-        this.y = height / 2 + 125
+        this.x = width / 2 - 25;
+        this.y = height / 2 + 125;
         this.points = 0;
         this.highScore = 0;
         this.lives = 3;
@@ -21,7 +19,7 @@ class Player {
         if(this.lives > 0) {
             rectMode(CORNER);
             fill(255);
-            image(imgSanta, this.x, this.y, 50, 75)
+            image(imgSanta, this.x, this.y, 75, 110);
         }
         else {
             if (this.points > this.highScore) {
@@ -92,7 +90,6 @@ class Gift {
         else {
             this.isFake = false;
         }
-        console.log(random(1, 2))
 
         this.imgSelect = floor(random(1, 3));
     }
@@ -102,9 +99,6 @@ class Gift {
             rectMode(CORNER);
 
             if (this.isFake) {
-                //fill(255, 0, 0);
-
-                //rect(this.x, this.y, 50, 50);
                 image(imgBomb, this.x, this.y, 50, 50);
             }
             else {
@@ -124,7 +118,7 @@ class Gift {
     }
 
     checkCollection(playerX, playerY) {
-        if (this.x + 15 > playerX && this.x - 15 < playerX && this.y + 50 > playerY && this.y - 50 < playerY) {
+        if(this.x > playerX && this.x + 50 < playerX + 75 && this.y > playerY && this.y + 50 < playerY + 100) {
             this.isCollected = true;
             return true;
         }
@@ -158,9 +152,7 @@ let difficulty;
 let gameStart;
 let gameOver;
 
-let cooldown = false;
 
-// let btnRestart;
 let radioDifficulty;
 
 let imgSanta;
@@ -178,7 +170,7 @@ function preload() {
     imgPresent2 = loadImage("assets/present2.png");
     imgPresent3 = loadImage("assets/present3.png");
     imgBomb = loadImage("assets/bomb.png");
-    //imgBg = loadImage("assets/background.png");
+    imgBg = loadImage("assets/background.png");
     imgStart = loadImage("assets/start.png");
     imgGameOver = loadImage("assets/gameover.png");
 }
@@ -194,14 +186,9 @@ function setup() {
     
     const mainContainer = select("main");
 
-    // btnRestart = createButton("Restart");
-    // btnRestart.parent(mainContainer);
-    // btnRestart.position(width / 2 - 25, height - 30);
-    // btnRestart.mousePressed(restart);
-
     radioDifficulty = createRadio();
     radioDifficulty.parent(mainContainer);
-    radioDifficulty.position(width / 2 - 85, 5);
+    radioDifficulty.position(width / 2 - 90, height + 10);
     radioDifficulty.option("Easy");
     radioDifficulty.option("Normal");
     radioDifficulty.option("Hard");
@@ -211,7 +198,7 @@ function setup() {
 function draw() {
     background(255);
     difficulty = radioDifficulty.value();
-    //image(imgBg, 0, 0, width, height);
+    image(imgBg, 0, 0, width, height);
 
     if (gameStart === true) {
         radioDifficulty.show();
@@ -219,7 +206,6 @@ function draw() {
     }
 
     if (gameOver === false && gameStart === false) {
-        
         player.draw();
         player.move();
 
@@ -232,14 +218,14 @@ function draw() {
 
         radioDifficulty.hide();
 
-        fill(0);
+        fill(255);
         noStroke();
         textSize(15);
         textAlign(LEFT);
         text("Score: " + player.points, 5, 16)
 
         textAlign(CENTER);
-        text("Highest Score: " + player.highScore, width / 2, 16)
+        text("High Score: " + player.highScore, width / 2, 16)
 
         textAlign(RIGHT)
         text("Lives: " + player.lives, width - 10, 16)
@@ -265,13 +251,9 @@ function draw() {
             }
         }
     }
-    else if (gameStart === false ) {
+    if (gameStart === false && gameOver === true) {
         image(imgGameOver, 0, 0, width, height);
-        //btnRestart.show();
         radioDifficulty.show();
-
-        cooldown = true;
-        setTimeout(disableCooldown, 1000);
 
         fill(255);
         stroke(0);
@@ -286,13 +268,12 @@ function draw() {
 }
 
 function keyPressed() {
-    if (gameOver || gameStart && cooldown === false) {
+    if (gameStart) {
         restart();
     }
-}
-
-function disableCooldown() {
-    cooldown = false;
+    if (gameOver && !keyIsDown(65) && !keyIsDown(68) && !keyIsDown(LEFT_ARROW) && !keyIsDown(RIGHT_ARROW)) {
+        restart();
+    }
 }
 
 function restart() {
