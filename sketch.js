@@ -164,6 +164,8 @@ let imgPresent2;
 let imgPresent3;
 let imgBomb;
 let imgBg;
+let imgStart;
+let imgGameOver;
 
 function preload() {
     imgSanta = loadImage("assets/santa.png");
@@ -172,6 +174,8 @@ function preload() {
     imgPresent3 = loadImage("assets/present3.png");
     imgBomb = loadImage("assets/bomb.png");
     //imgBg = loadImage("assets/background.png");
+    imgStart = loadImage("assets/start.png");
+    //imgGameOver = loadImage("assets/gameover.png");
 }
 
 function setup() {
@@ -219,6 +223,17 @@ function draw() {
     if (gameOver === false) {
         btnRestart.hide();
         radioDifficulty.hide();
+
+        fill(0);
+        textSize(15);
+        textAlign(LEFT);
+        text("Score: " + player.points, 5, 16)
+
+        textAlign(CENTER);
+        text("Highest Score: " + player.highScore, width / 2, 16)
+
+        textAlign(RIGHT)
+        text("Lives: " + player.lives, width - 10, 16)
         
         if(gift.checkCollection(player.x, player.y)) {
             if (!gift.isFake) {
@@ -242,20 +257,21 @@ function draw() {
         }
     }
     else {
+        image(imgGameOver, 0, 0, width, height);
         btnRestart.show();
         radioDifficulty.show();
+
+        fill(0);
+        textSize(15);
+        textAlign(LEFT);
+        text("Score: " + player.points, 5, 16)
+
+        textAlign(CENTER);
+        text("Highest Score: " + player.highScore, width / 2, 16)
+
+        textAlign(RIGHT)
+        text("Lives: " + player.lives, width - 10, 16)
     }
-
-    fill(0);
-    textSize(15);
-    textAlign(LEFT);
-    text("Score: " + player.points, 5, 16)
-
-    textAlign(CENTER);
-    text("Highest Score: " + player.highScore, width / 2, 16)
-
-    textAlign(RIGHT)
-    text("Lives: " + player.lives, width - 10, 16)
 }
 
 function restart() {
