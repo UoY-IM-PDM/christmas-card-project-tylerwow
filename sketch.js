@@ -175,7 +175,7 @@ function preload() {
     imgBomb = loadImage("assets/bomb.png");
     //imgBg = loadImage("assets/background.png");
     imgStart = loadImage("assets/start.png");
-    //imgGameOver = loadImage("assets/gameover.png");
+    imgGameOver = loadImage("assets/gameover.png");
 }
 
 function setup() {
@@ -225,6 +225,7 @@ function draw() {
         radioDifficulty.hide();
 
         fill(0);
+        noStroke();
         textSize(15);
         textAlign(LEFT);
         text("Score: " + player.points, 5, 16)
@@ -261,16 +262,15 @@ function draw() {
         btnRestart.show();
         radioDifficulty.show();
 
-        fill(0);
-        textSize(15);
-        textAlign(LEFT);
-        text("Score: " + player.points, 5, 16)
+        fill(255);
+        stroke(0);
+        strokeWeight(2);
+        textSize(30);
+        textAlign(CENTER);
+        text("Score: " + player.points, width / 2, 130);
 
         textAlign(CENTER);
-        text("Highest Score: " + player.highScore, width / 2, 16)
-
-        textAlign(RIGHT)
-        text("Lives: " + player.lives, width - 10, 16)
+        text("High Score: " + player.highScore, width / 2, 160);
     }
 }
 
