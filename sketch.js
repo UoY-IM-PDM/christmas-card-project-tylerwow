@@ -66,10 +66,20 @@ class Gift {
     isFake;
     imgSelect;
 
-    constructor() {
+    constructor(difficulty) {
         this.x = random(0, width - 40);
         this.y = 0;
-        this.speed = 4;
+
+        if (difficulty === "Easy") {
+            this.speed = 2;
+        }
+        else if (difficulty === "Normal") {
+            this.speed = 3;
+        }
+        else if (difficulty === "Hard") {
+            this.speed = 4;
+        }
+
         this.isCollected = false;
         this.isOutOfBounds = false;
 
@@ -123,15 +133,30 @@ class Gift {
             return true;
         }
     }
+
+    setDifficulty(difficulty) {
+        if (difficulty === "Easy") {
+            this.speed === 2;
+        }
+        if (difficulty === "Normal") {
+            this.speed === 3;
+        }
+        if (difficulty === "Hard") {
+            this.speed === 4;
+        }
+    }
 }
 
 let player;
 let gift;
 
+let difficulty;
+
 let gameStart;
 let gameOver;
 
 let btnRestart;
+let radioDifficulty;
 
 let imgSanta;
 let imgPresent1;
@@ -153,16 +178,25 @@ function setup() {
     createCanvas(500, 500);
 
     player = new Player();
-    gift = new Gift();
+    gift = new Gift("Normal");
 
     gameStart = true;
     gameOver = false;
     
     const mainContainer = select("main");
+
     btnRestart = createButton("Restart");
     btnRestart.parent(mainContainer);
     btnRestart.position(width / 2 - 25, height - 30);
     btnRestart.mousePressed(restart);
+
+    radioDifficulty = createRadio();
+    radioDifficulty.parent(mainContainer);
+    radioDifficulty.position(0, height - 20);
+    radioDifficulty.option("Easy");
+    radioDifficulty.option("Normal");
+    radioDifficulty.option("Hard");
+    radioDifficulty.selected("Normal");
 }
 
 function draw() {
@@ -175,36 +209,41 @@ function draw() {
 
     gift.draw();
 
+    //gift.setDifficulty(radioDifficulty.value());
+    difficulty = radioDifficulty.value();
+
     if (player.lives === 0) {
         gameOver = true;
     }
 
     if (gameOver === false) {
         btnRestart.hide();
+        radioDifficulty.hide();
         
         if(gift.checkCollection(player.x, player.y)) {
             if (!gift.isFake) {
                 player.addPoints();
-                gift = new Gift();
+                gift = new Gift(difficulty);
             }
             else {
                 player.loseLife();
-                gift = new Gift();
+                gift = new Gift(difficulty);
             }
         }
         if(gift.checkIsOutOfBounds()) {
             if (!gift.isFake) {
                 player.loseLife();
-                gift = new Gift();
+                gift = new Gift(difficulty);
             }
             else {
                 player.addPoints();
-                gift = new Gift();
+                gift = new Gift(difficulty);
             }
         }
     }
     else {
         btnRestart.show();
+        radioDifficulty.show();
     }
 
     fill(0);
@@ -222,5 +261,5 @@ function draw() {
 function restart() {
     gameOver = false;
     player.restart();
-    gift = new Gift();
+    gift = new Gift(difficulty);
 }
